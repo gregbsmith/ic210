@@ -1,5 +1,6 @@
 /*	IC210 Lab 1
  * 	GREGORY SMITH 235952
+ * 	I talked with Noah Garcia-Galan about this lab
  */
 
 #include "ic210.h"
