@@ -5,25 +5,23 @@
 #include "ic210.h"
 
 int main() {
-	fputs("And then my heart with pleasure fills,\n", stdout);
-	fputs("And dances with daffodils.\n \n", stdout);
 	
-	fputs("And then my heart with pleasure fills,\n", stdout);
-	fputs("And dances with daffodils.\n \n", stdout);
+	int i;
 	
-	fputs("And then my heart with pleasure fills,\n", stdout);
-	fputs("And dances with daffodils.\n \n", stdout);
-	
-	fputs("And then my heart with pleasure fills,\n", stdout);
-	fputs("And dances with daffodils.\n \n", stdout);
+	for (i = 0; i < 4; i = i + 1){
+		fputs("And then my heart with pleasure fills,\n", stdout);
+		fputs("And dances with daffodils.\n \n", stdout);
+	}
 	
 	fputs("I like 1 flower.\n", stdout);
-	fputs("I like 2 flower.\n", stdout);
-	fputs("I like 3 flower.\n", stdout);
-	fputs("I like 4 flower.\n", stdout);
-	fputs("I like 5 flower.\n \n", stdout);
 	
-	fputs("And then my heart with pleasure fills, and dances with daffodils.\n", stdout);
+	for (i = 2; i < 6; i = i + 1){
+		fputs("I like ", stdout);
+		writenum(i, stdout);
+		fputs(" flowers.\n", stdout);
+	}
+	
+	fputs("\nAnd then my heart with pleasure fills, and dances with daffodils.\n", stdout);
 	
 	
 	return 0;
