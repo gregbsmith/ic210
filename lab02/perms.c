@@ -52,7 +52,7 @@ int main() {
 	other3 = d3;
 	
 	
-	fputs("\nUser: \nread    ", stdout);
+	fputs("\nUser:\nread    ", stdout);
 	writenum(user1, stdout);
 	fputs("\nwrite   ", stdout);
 	writenum(user2, stdout);
@@ -60,7 +60,7 @@ int main() {
 	writenum(user3, stdout);
 	fputs("\n\n", stdout);
 	
-	fputs("Group: \nread    ", stdout);
+	fputs("Group:\nread    ", stdout);
 	writenum(group1, stdout);
 	fputs("\nwrite   ", stdout);
 	writenum(group2, stdout);
@@ -68,7 +68,7 @@ int main() {
 	writenum(group3, stdout);
 	fputs("\n\n", stdout);
 	
-	fputs("Other: \nread    ", stdout);
+	fputs("Other:\nread    ", stdout);
 	writenum(other1, stdout);
 	fputs("\nwrite   ", stdout);
 	writenum(other2, stdout);
