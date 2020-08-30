@@ -6,7 +6,7 @@
 
 int main() {
 	
-	fputs("Input word: ", stdout);
+	fputs("Input word : ", stdout);
 	char first = readchar(stdin);
 	first = first - 32;
 	cstring theRest;
