@@ -8,7 +8,7 @@ int main(){
 	
 	double EUROS_PER_DOLLAR = .84;
 	double YEN_PER_DOLLAR = 105.36;
-	double EUROS_PER_YEN = EUROS_PER_DOLLAR / YEN_PER_DOLLAR;
+	// double EUROS_PER_YEN = EUROS_PER_DOLLAR / YEN_PER_DOLLAR;
 	cstring dollars = "Dollars";
 	cstring yen = "Yen";
 	cstring euros = "Euros";
@@ -21,6 +21,7 @@ int main(){
 	
 	amnt = readnum(stdin);
 	readstring(currency1, stdin);
+	readstring(currency2, stdin);
 	readstring(currency2, stdin);
 	
 	if(stringeq(currency1, dollars))
@@ -53,7 +54,8 @@ int main(){
 		//euros:
 		if(stringeq(currency2, euros))
 		{
-			new_amnt = amnt * EUROS_PER_YEN;
+			new_amnt = amnt / YEN_PER_DOLLAR;
+			new_amnt = new_amnt * EUROS_PER_DOLLAR;
 			writenum(new_amnt, stdout);
 			fputs("\n", stdout);
 			return 0;
@@ -75,7 +77,8 @@ int main(){
 		//yen:
 		if(stringeq(currency2, yen))
 		{
-			new_amnt = amnt / EUROS_PER_YEN;
+			new_amnt = amnt / EUROS_PER_DOLLAR;
+			new_amnt = new_amnt * YEN_PER_DOLLAR;
 			writenum(new_amnt, stdout);
 			fputs("\n", stdout);
 			return 0;
