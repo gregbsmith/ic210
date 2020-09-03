@@ -31,11 +31,17 @@ int main(){
 		if(stringeq(currency2, euros))
 		{
 			new_amnt = amnt * EUROS_PER_DOLLAR;
+			writenum(new_amnt, stdout);
+			fputs("\n", stdout);
+			return 0;
 		}
 		else
 		{
 			//yen:
 			new_amnt = amnt * YEN_PER_DOLLAR;
+			writenum(new_amnt, stdout);
+			fputs("\n", stdout);
+			return 0;
 		}
 		
 		
@@ -48,11 +54,17 @@ int main(){
 		if(stringeq(currency2, euros))
 		{
 			new_amnt = amnt * EUROS_PER_YEN;
+			writenum(new_amnt, stdout);
+			fputs("\n", stdout);
+			return 0;
 		}
 		else
 		{
 			//dollars:
 			new_amnt = amnt / YEN_PER_DOLLAR;
+			writenum(new_amnt, stdout);
+			fputs("\n", stdout);
+			return 0;
 		}
 		
 	}
@@ -64,11 +76,17 @@ int main(){
 		if(stringeq(currency2, yen))
 		{
 			new_amnt = amnt / EUROS_PER_YEN;
+			writenum(new_amnt, stdout);
+			fputs("\n", stdout);
+			return 0;
 		}
 		else
 		{
 			//dollars:
 			new_amnt = amnt / EUROS_PER_DOLLAR;
+			writenum(new_amnt, stdout);
+			fputs("\n", stdout);
+			return 0;
 		}
 		
 	}
