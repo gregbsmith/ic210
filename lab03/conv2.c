@@ -34,6 +34,13 @@ int main(){
 	{
 		readstring(currency2, stdin);
 	}
+	if(stringeq(currency1, currency2))
+	{
+		writenum(amnt, stdout);
+		fputs("\n", stdout);
+		return 0;
+	}
+	
 	//converting us to...
 	if(stringeq(currency1, us))
 	{
