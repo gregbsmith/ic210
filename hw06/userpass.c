@@ -11,8 +11,8 @@ int main(){
 	
 	cstring SUPE = "supe";
 	cstring BEATARMY = "beatarmy";
-	cstring ROCHE = "roche";
-	cstring EMACS = "iloveemacs";
+	cstring ROCHE = "bbq";
+	cstring EMACS = "brisket";
 	
 	cstring uName;
 	cstring uPass;
