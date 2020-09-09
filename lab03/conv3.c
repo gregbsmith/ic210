@@ -9,13 +9,17 @@ int main(){
 	cstring curr1;
 	cstring curr2;
 	cstring conjunction;
-	cstring and_;
-	cstring to_;
+	cstring and_ = "and";
+	cstring to_ = "to";
 	cstring dollars = "Dollars";
 	cstring us = "US";
 	cstring canadian = "Canadian";
 	cstring yen = "Yen";
 	cstring euros = "Euros";
+	double runningDollUS = 0;
+	double runningDollCan = 0;
+	double runningYen = 0;
+	double runningEuros = 0;
 	double amnt1 = 0;
 	double amnt2 = 0;
 	double new_amnt = 0;
@@ -43,6 +47,7 @@ int main(){
 	}
 	else
 	{
+		/*
 		double amnt3 = 0;
 		cstring curr3;
 		amnt2 = readnum(stdin);
@@ -61,7 +66,76 @@ int main(){
 				(curr3, stdin);
 			}
 		}
+		*/
+		if(stringeq(curr1, us))
+		{
+			runningDollUS += amnt1;
+		}
+		else if(stringeq(curr1, euros))
+		{
+			runningEuros += amnt1;
+		}
+		else if(stringeq(curr1, yen))
+		{
+			runningYen += amnt1;
+		}
+		else if(stringeq(curr1, canadian))
+		{
+			runningDollCan += amnt1;
+		}
+		else
+		{
+			fputs("Look at line 88\n", stdout);
+			return 0;
+		}
 		
+		while(stringeq(conjunction, and_))
+		{
+			amnt1 = readnum(stdin);
+			
+			readstring(curr1, stdin);
+			if(stringeq(curr1, dollars))
+			{
+				readstring(curr1, stdin);
+			}
+			
+			if(stringeq(curr1, us))
+			{
+				runningDollUS += amnt1;
+			}
+			else if(stringeq(curr1, euros))
+			{
+				runningEuros += amnt1;
+			}
+			else if(stringeq(curr1, yen))
+			{
+				runningYen += amnt1;
+			}
+			else if(stringeq(curr1, canadian))
+			{
+				runningDollCan += amnt1;
+			}
+			else
+			{
+				fputs("Look at line 120\n", stdout);
+				return 0;
+			}
+			
+			readstring(conjunction, stdin);
+		}
+		
+		readstring(curr2, stdin);
+		if(stringeq(curr2, dollars))
+		{
+			readstring(curr2, stdin);
+		}
+		
+		new_amnt =    conv2(us, curr2, runningDollUS)
+					+ conv2(yen, curr2, runningYen)
+					+ conv2(euros, curr2, runningEuros)
+					+ conv2(canadian, curr2, runningDollCan);
+		writenum(new_amnt, stdout);
+		fputs("\n", stdout);
 		return 0;
 	}
 	/*
@@ -214,7 +288,10 @@ double conv2(cstring currency1, cstring currency2, double amnt)
 	//double amnt = 0;
 	double new_amnt = 0;
 	
-
+	if(stringeq(currency1, currency2))
+	{
+		return amnt;
+	}
 
 	
 	
