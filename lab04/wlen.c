@@ -11,7 +11,9 @@ int main(){
 	cstring ctWrd;
 	cstring tgr = "***";
 	int tgrCt = 0;
-	int wrdCt = 0;
+	double wrdCt = 0;
+	double ttlWlen = 0;
+	double avWlen = 0;
 	
 	fputs("Enter a filename: ", stdout);
 	readstring(bkFile, stdin);
@@ -27,17 +29,23 @@ int main(){
 	
 	while(tgrCt < 3){
 		readstring(ctWrd, filein);
-		wrdCt++;
+		wrdCt = wrdCt + 1.0;
 		if(stringeq(ctWrd, tgr)){
 			tgrCt++;
-			wrdCt--;
+			wrdCt = wrdCt - 1.0;
+		}
+		else{
+			ttlWlen += strlen(ctWrd);
 		}
 	}
 	
 	fclose(filein);
 	
-	fputs("Word count: ", stdout);
-	writenum(wrdCt, stdout);
+
+	avWlen = ttlWlen / wrdCt;
+	
+	fputs("Average word length: ", stdout);
+	writenum(avWlen, stdout);
 	
 	
 	fputs("\n", stdout);
