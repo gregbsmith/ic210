@@ -18,6 +18,8 @@ int main(){
 	int high = 0;
 	
 	fscanf(fin, "%s %i %i %i", trash1, &width, &height, &high);
+	fprintf(stdout, "width = %i, height = %i\nmax value = %i\n",
+	width, height, high);
 	
 	//fprintf(stdout, "%i %i", width, height);
 	
