@@ -30,11 +30,8 @@ int main(){
 	}
 	
 	while(!feof(fin)){
+		
 		curr = readchar(fin);
-		if(!curr){
-			fputs("You survived!", stdout);
-			return 0;
-		}
 		if(curr == 'X' && count == position){
 			fprintf(stdout, "You died on step %d\n", step);
 			return 0;
