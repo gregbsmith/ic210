@@ -24,6 +24,12 @@ int main(){
 	//writenum(income, stdout);
 	
 	stream fin = fopen(file, "r");
+	if(!fin){
+		fputs("File not found!\n", stdout);
+		return 0;
+	}
+	
+	
 	while(!feof(fin)){
 		fscanf(fin, "%lg%%	$%lg to $%lg", &perc, &lower, &upper);
 		if(perc == oldPerc)
@@ -40,5 +46,6 @@ int main(){
 			}
 			oldPerc = perc;
 	}
+	
 	return 0;
 }
