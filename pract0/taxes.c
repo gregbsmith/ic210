@@ -10,7 +10,7 @@ int main(){
 	double income = 0;
 	
 	cstring NOT_U = "% This is not you!\n";
-	cstring IS_U = "% This is you! you owe $";
+	cstring IS_U = "% This is you! You owe $";
 	
 	double perc = 0;
 	double oldPerc = 0;
