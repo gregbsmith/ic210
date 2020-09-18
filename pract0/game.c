@@ -22,7 +22,7 @@ int main(){
 	fscanf(fin, "width = %d", &width);
 	//writenum(width, stdout);
 	
-	fprintf(stdout, "Enter a position between 1 and %d: ", width);
+	fprintf(stdout, "Enter position between 1 and %d: ", width);
 	position = readnum(stdin);
 	if(position > width){
 		fputs("Invalid position!\n", stdout);
