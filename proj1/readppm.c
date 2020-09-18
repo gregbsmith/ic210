@@ -35,6 +35,5 @@ int main(){
 	}
 	
 	fclose(fin);
-	fputs("\n", stdout);
 	return 0;
 }
