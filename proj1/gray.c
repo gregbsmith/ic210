@@ -18,7 +18,7 @@ int main(){
 	stream fin = fopen(inFile, "r");
 	if(!fin){
 		//error
-		fputs("Error: Input file not found", stdout);
+		fputs("Error: Input file not found\n", stdout);
 		return 1;
 	}
 	
