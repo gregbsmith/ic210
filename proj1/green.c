@@ -45,7 +45,7 @@ int main(){
 	
 	FILE *fp;
 	fp = fopen(outputFile, "w");
-	
+	fprintf(fp, "%s\n%i %i\n%i\n", fTrash, fWidth, fHeight, fHi);
 	for(int i = 0; i < fHeight; i++){
 		for(int j = 0; j < fWidth; j++){
 			int red = 0;
