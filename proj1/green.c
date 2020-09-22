@@ -40,7 +40,7 @@ int main(){
 	
 	if((fWidth != bWidth) || (fHeight != bHeight)){
 		fputs("Error: Images have different sizes\n", stdout);
-		return 1;
+		return 2;
 	}
 	
 	FILE *fp;
