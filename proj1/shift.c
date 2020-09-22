@@ -59,7 +59,7 @@ int main(){
 			int red = 0;
 			int green = 0;
 			int blue = 0;
-			if((i >= rs && i <= (fHeight + rs)) && (j >= cs && j <= (fWidth + cs))){
+			if((i >= rs && i < (fHeight + rs)) && (j >= cs && j < (fWidth + cs))){
 				
 				fscanf(fFin, "%i %i %i", &red, &green, &blue);
 				
