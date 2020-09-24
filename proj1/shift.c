@@ -63,7 +63,7 @@ int main(){
 				
 				fscanf(fFin, "%i %i %i", &red, &green, &blue);
 				
-				if(!red && !blue && green == fHi){
+				if(red <= 50 && blue <=50 && green >= 230){
 					fscanf(bFin, " %i %i %i", &red, &green, &blue);
 					fprintf(fp, "%i %i %i", red, green, blue);
 				}else{
