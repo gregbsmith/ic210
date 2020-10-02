@@ -1,0 +1,21 @@
+In order to make brute.c, I modified realcraps.c to return the value
+of the seed that gave the highest number of consecutive wins to start
+out. I used a for loop from INT_MIN to INT_MAX to check every int value.
+The program will print the highest number of player wins that started
+and the seed that gave that case.
+
+Unfortunately, the program has not stopped running yet. It's currently
+1506 on Thursday 1 OCT.
+
+It is currently 2116. The program from INT_MIN to INT_MAX still has
+not stopped. I am worried that I made an infinite for loop by adding 1
+to INT_MAX only to get INT_MIN like Dr. Roche, warned me about, but
+I am also afraid to end the program because I am holding out some
+irrational hope that I actually did the program right and it might end
+and give me a useful result any minute now.
+
+I changed it to go from -100000 to 100000 to give a little more sane
+of a scope to test. I'll see if that one ends.
+
+The brute.c program from -100000 to 100000 just ended! It gave me a
+seed of -49505, which gave 17 wins. I'll see if I can do better.
