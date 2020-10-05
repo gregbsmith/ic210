@@ -127,7 +127,7 @@ int subthrowdice(int setPt);
 int main(){
 	int bestWins = 0;
 	int bestSeed;
-	for(int i = -100000; i < 100000; i++){
+	for(int i = INT_MIN + 1; i < INT_MAX - 1; i++){
 		int throw = 0;
 		int setPt = 0;
 		int seed = i;

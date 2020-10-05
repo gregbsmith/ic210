@@ -6,7 +6,7 @@
 // I want a function harm(n) that computes the nth harminic number, which
 // is 1/1 + 1/2 + 1/3 + ... + 1/n.  Can you make it for me?
 // Add the prototype and definition to this file that makes the program work.
-
+double harm(int n);
 int main() {
   /* DON'T CHANGE MAIN! Just write a good harm() function
    * prototype and definition above and below.
@@ -28,4 +28,14 @@ int main() {
          i, curharm, target);
 
   return 0;
+}
+
+double harm(int n){
+	double sum = 0;
+	double frac = 1;
+	for(int i = 0; i < n; i++){
+		frac = 1.0 / (i + 1.0);
+		sum = sum + frac;
+	}
+	return sum;
 }

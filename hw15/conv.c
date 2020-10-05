@@ -1,4 +1,4 @@
-// Replace this comment with your name
+// Gregory Smith
 // You should only need to edit the main() function below.
 
 #include <stdio.h>
@@ -17,8 +17,14 @@ double lenUnitCF(cstring fromUnit, cstring toUnit);
 double toFeet(cstring fromUnit); // This just helps with lenUnitCF
 
 int main() {
-  //---- YOUR CODE GOES HERE ---------------//
-  return 0;
+	cstring frm;
+	cstring to;
+	double len = 0;
+	
+	fscanf(stdin, " convert %lg %s to %s", &len, frm, to);
+	len = len * lenUnitCF(frm, to);
+	printf("%lg %s\n", len, to);
+	return 0;
 }
 
 /*** Don't change this function - just use it! */

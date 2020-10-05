@@ -19,3 +19,7 @@ of a scope to test. I'll see if that one ends.
 
 The brute.c program from -100000 to 100000 just ended! It gave me a
 seed of -49505, which gave 17 wins. I'll see if I can do better.
+If the submit system were to run my program for brute, it is possible
+that my student result could contain a more optimal seed. However, I
+don't know if that is the case, and I don't know how likely it is that
+this thing is ever going to end.
