@@ -1,10 +1,11 @@
-// Replace this comment with your name
+// Gregory Smith
 // You should NOT edit the main() function below
 
 #include <stdio.h>
 
 // YOUR TASK: Add the prototype and definition for the
 // split function that makes the program work.
+int split(double amount, int* ptrdollars, int* ptrcents);
 
 int main() {
   /* DON'T CHANGE MAIN! Just write a good split() function
@@ -27,4 +28,10 @@ int main() {
   printf("That's %i dollars and %i cents.\n", dollars, cents);
 
   return 0;
+}
+
+int split(double amount, int* ptrdollars, int* ptrcents){
+	*ptrdollars = (int) amount;
+	*ptrcents = (int) ((amount - *ptrdollars) * 100);
+	return 0;
 }
