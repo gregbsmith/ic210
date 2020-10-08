@@ -37,3 +37,17 @@ int main() {
 
   return 0;
 }
+
+// Prints out the string s, count times in a row,
+// in a single line.
+// You must implement this using recursion!
+void repeat(cstring s, int count){
+	//base case
+	if(count == 1){
+		printf("%s", s);
+	}else{//recursive case
+		printf("%s", s);
+		count--;
+		repeat(s, count);
+	}
+}
