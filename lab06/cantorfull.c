@@ -10,18 +10,21 @@
 #include <math.h>
 typedef char cstring[128];
 void repeat(cstring s, int count);
-bool cantor_row(int length, int level);
+void cantor_row(int length, int level);
+int numRows(int j);
 
 int main(){
 	int size = 0;
 	int row = 0;
+	int numberRows = 0;
 	bool cont = 1;
 	printf("size: ");
 	scanf(" %d", &size);
 	printf("Width-%d Cantor set:\n", size);
-	while(cont){
+	numberRows = numRows(size);
+	while(row < numberRows){
 		
-		cont = cantor_row(size, row);
+		cantor_row(size, row);
 		printf("\n");
 		row++;
 	}
@@ -29,23 +32,24 @@ int main(){
 	return 0;
 }
 
-bool cantor_row(int length, int level){
+void cantor_row(int length, int level){
 	if(level == 0){
 		repeat("X", length);
-		if(length == 1){
-			return false;
-		}else{
-			return true;
-		}
 	}else if(length > 1){
 		cantor_row(length / 3, level - 1);
 		repeat("_", length / 3);
 		cantor_row(length / 3, level - 1);
-		return true;
-	}else{
-		printf("X");
-		return false;
 	}
+	return;
+}
+
+int numRows(int j){
+	int i = 0;
+	while(j > 0){
+		j = j/3;
+		i++;
+	}
+	return i;
 }
 
 void repeat(cstring s, int count){

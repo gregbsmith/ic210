@@ -1,2 +1,6 @@
-// Erase this comment and put your name here!
+// Gregory Smith
 // countdown.h: function prototypes
+
+#include <stdio.h>
+
+int countdown(int n);
