@@ -8,6 +8,10 @@
 #include <stdbool.h>
 #include <string.h>
 typedef char cstring[128];
+
+// returns the maximum value of an array of ints
+int max_val(int* array, int size);
+
 // fills in the array with integers read from stdin
 void read(int* array, int size);
 
@@ -55,15 +59,9 @@ int main(){
 			done = is_ordered(arr, size);
 		}else{
 			// command is reverse
-			
 			scanf(" %c %c", &swp1, &swp2);
 			int rev1 = ((int) swp1) - A;
 			int rev2 = ((int) swp2) - A;
-			/*if(rev1 - 1 == rev2 || rev2 - 1 == rev1){
-				hold = arr[rev1];
-				arr[rev1] = arr[rev2];
-				arr[rev2] = hold;
-			}else{ */
 			for(int i = 0; i <= (rev2 - rev1)/2; i++){
 				hold = arr[rev1 + i];
 				arr[rev1 + i] = arr[rev2 - i];
@@ -92,9 +90,16 @@ void read(int* array, int size){
 void print(int* array, int size){
 	// ascii value of 'A' is 65dec
 	int A = 65;
-	
-	for(int i = 0; i < size; i++){
-		printf(" %d", array[i]);
+	int max = max_val(array, size);
+	for(int i = 0; i < max; i++){
+		printf(" ");
+		for(int j = 0; j < size; j++){
+			if(array[j] + i >= max){
+				printf("# ");
+			}else{
+				printf("  ");
+			}
+		}
 	}
 	
 	printf("\n");
@@ -124,4 +129,14 @@ bool is_ordered(int* array, int size){
 		last = array[i];
 	}
 	return true;
+}
+
+int max_val(int* array, int size){
+	int max_value = array[0];
+	for(int i = 1; i < size; i++){
+		if(array[i] > max_value){
+			max_value = array[i];
+		}
+	}
+	return max_value;
 }
