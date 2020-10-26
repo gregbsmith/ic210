@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <math.h>
 typedef char cstring[128];
+
 int main(){
 	double* numbers = calloc(1, sizeof(double));
 	int size = 1;
