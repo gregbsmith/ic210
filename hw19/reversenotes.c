@@ -10,6 +10,7 @@
 typedef char cstring[128];
 
 int main(){
+	
 	printf("How many numbers? ");
 	int numbers = 0;
 	scanf(" %d", &numbers);

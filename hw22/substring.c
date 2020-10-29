@@ -9,6 +9,7 @@ typedef char cstring[128];
 bool match(cstring target, cstring test, int offset);
 
 int main(){
+	
 	bool have_match = false;
 	printf("Target: ");
 	cstring target;

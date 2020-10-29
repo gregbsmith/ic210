@@ -1,116 +1,70 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// reads a letter into an L array
+void readLetter(char** L, int m, int n, FILE* f);
+
+// prints the letters to sdtout
+void printLetter(char** L, int m, int n);
+
 int main() {
   FILE* fin = fopen("letters.txt", "r");
 
-  // Read A
+  // allocate arrays
   char** L0 = calloc(4, sizeof(char*));
-  for(int i = 0; i < 4; i++) {
-    L0[i] = calloc(7, sizeof(char));
-  }
-  for(int i = 0; i < 4;i++) {
-    for(int j = 0; j < 7; j++) {
-      L0[i][j] = fgetc(fin);
-    }
-    while(fgetc(fin) != '\n') { }
-  }
-
-  // Read N
   char** L1 = calloc(4, sizeof(char*));
-  for(int i = 0; i < 4; i++) {
-    L1[i] = calloc(7, sizeof(char));
-  }
-  for(int i = 0; i < 4;i++) {
-    for(int j = 0; j < 7; j++) {
-      L1[i][j] = fgetc(fin);
-    }
-    while(fgetc(fin) != '\n') { }
-  }
-
-  // Read V
   char** L2= calloc(4, sizeof(char*));
-  for(int i = 0; i < 4; i++) {
-    L2[i] = calloc(7, sizeof(char));
-  }
-  for(int i = 0; i < 4;i++) {
-    for(int j = 0; j < 7; j++) {
-      L2[i][j] = fgetc(fin);
-    }
-    while(fgetc(fin) != '\n') { }
-  }
-
-  // Read Y
   char** L3 = calloc(4, sizeof(char*));
   for(int i = 0; i < 4; i++) {
+    L0[i] = calloc(7, sizeof(char));
+    L1[i] = calloc(7, sizeof(char));
+    L2[i] = calloc(7, sizeof(char));
     L3[i] = calloc(7, sizeof(char));
   }
-  for(int i = 0; i < 4;i++) {
-    for(int j = 0; j < 7; j++) {
-      L3[i][j] = fgetc(fin);
-    }
-    while(fgetc(fin) != '\n') { }
-  }
-
-  // Print N
-  for(int i = 0; i < 4;i++) {
-    for(int j = 0; j < 7; j++) {
-      printf("%c", L1[i][j]);
-    }
-    printf("\n");
-  }
-  printf("\n");
-
-  // Print A
-  for(int i = 0; i < 4;i++)
-  {
-    for(int j = 0; j < 7; j++) {
-      printf("%c", L0[i][j]);
-    }
-    printf("\n");
-  }
-  printf("\n");
-
-  // Print V
-  for(int i = 0; i < 4;i++)
-  {
-    for(int j = 0; j < 7; j++) {
-      printf("%c", L2[i][j]);
-    }
-    printf("\n");
-  }
-  printf("\n");
-
-  // Print Y
-  for(int i = 0; i < 4;i++)
-  {
-    for(int j = 0; j < 7; j++) {
-      printf("%c", L3[i][j]);
-    }
-    printf("\n");
-  }
-
+  // Read letters
+  readLetter(L0, 4, 7, fin);
+  readLetter(L1, 4, 7, fin);
+  readLetter(L2, 4, 7, fin);
+  readLetter(L3, 4, 7, fin);
+  
+  // Print letters
+  printLetter(L1, 4, 7);
+  printLetter(L0, 4, 7);
+  printLetter(L2, 4, 7);
+  printLetter(L3, 4, 7);
+  
+  // free everything from the heap
   for (int i = 0; i < 4; i++) {
     free(L0[i]);
-  }
-  free(L0);
-
-  for (int i = 0; i < 4; i++) {
     free(L1[i]);
-  }
-  free(L1);
-
-  for (int i = 0; i < 4; i++) {
     free(L2[i]);
-  }
-  free(L2);
-
-  for (int i = 0; i < 4; i++) {
     free(L3[i]);
   }
+  free(L0);
+  free(L1);
+  free(L2);
   free(L3);
 
   fclose(fin);
 
   return 0;
+}
+
+void readLetter(char** L, int m, int n, FILE* f) {
+	for(int i = 0; i < m; i++) {
+		for(int j = 0; j < n; j++) {
+			L[i][j] = fgetc(f);
+		}
+    while(fgetc(f) != '\n') { }
+  }
+}
+
+void printLetter(char** L, int m, int n) {
+	for(int i = 0; i < m;i++) {
+		for(int j = 0; j < n; j++) {
+			printf("%c", L[i][j]);
+		}
+    printf("\n");
+	}
+	printf("\n");
 }
