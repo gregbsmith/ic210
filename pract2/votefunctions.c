@@ -1,7 +1,3 @@
-/* vote_functions.c
- * Gregory Smith
- */
-
 #include <stdio.h>
 #include <string.h>
 #include "vote_functions.h"
@@ -18,11 +14,9 @@ char* c2, int*ct2) {
 	if(!strcmp(input, END)) {
 		return false;
 	}else if(!strcmp(input, c1)) {
-		*ct1 = *ct1 + 1;
+		*ct1++;
 	}else if(!strcmp(input, c2)) {
-		*ct2 = *ct2 + 1;
-	}else {
-		printf("Invalid name\n");
+		*ct2++;
 	}
 	return true;
 }
