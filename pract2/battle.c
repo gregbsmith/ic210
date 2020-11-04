@@ -56,11 +56,11 @@ int main() {
 	
 	while(subs) {
 		printf("Target: ");
-		usleep(1000000);
+		
 		// fflush(stdin);
 		int guessx = 0;
 		int guessy = 0;
-		scanf("(%d,%d)", &guessx, &guessy);
+		scanf("\n(%d,%d)", &guessx, &guessy);
 		
 			if(guessx == x1 && guessy == y1) {
 				hit = true;
@@ -77,10 +77,10 @@ int main() {
 			}
 			if(hit) {
 				map[guessx][guessy] = 'X';
-				printf("Hit!\n");
+				printf("Hit!\n\n");
 			}else {
 				map[guessx][guessy] = '.';
-				printf("Miss!\n");
+				printf("Miss!\n\n");
 			}
 			rounds++;
 			for(int i = 0; i < rows; i++) {
@@ -89,6 +89,7 @@ int main() {
 				}
 				printf("\n");
 			}
+			printf("\n");
 		
 	}
 	
@@ -127,10 +128,10 @@ int play(char** map, int x1, int x2, int y1, int y2, int rows, int columns) {
 	
 	while(subs) {
 		printf("Target: ");
-		fflush(stdin);
+		//fflush(stdin);
 		int guessx = 0;
 		int guessy = 0;
-		
+		scanf("\n(%d,%d)", &guessx, &guessy);
 		
 			if(guessx == x1 && guessy == y1) {
 				hit = true;
