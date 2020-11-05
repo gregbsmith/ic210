@@ -33,14 +33,7 @@ int score(int val);
 
 int main() {
 	
-	// declaring characters used for suits
-	// this code was given on the IC210 website
-	char CLUB[]    = "\u2663"; // ♣
-	char DIAMOND[] = "\u2666"; // ♦
-	char HEART[]   = "\u2665"; // ♥
-	char SPADE[]   = "\u2660"; // ♠
-	
-	int seed = 0;
+int seed = 0;
 	
 	
 	fputs("Seed: ", stdout);
@@ -52,14 +45,7 @@ int main() {
 	
 	int* deck = calloc(52, sizeof(int));
 	shuffle(deck, seed);
-	// printcards(deck);
-	/*
-	for(int i = 0; i < 52; i++) {
-		printf("%d\n", deck[i]);
-	}
-	*/
-	//printf("\n\n Player Dealer");
-	
+
 	deal(deck);
 	
 	free(deck);
@@ -68,12 +54,6 @@ int main() {
 }
 
 int* shuffle(int* deck, int s) {
-	// 59 is important because RAND_MAX % 59 is 54
-	//int FTY_NINE = 59;
-	//int FTY_TWO = 52;
-	
-	// the following 4 for loops populate the deck
-	// in numerical order
 	for(int i = 0; i < 13; i++) {
 		deck[i] = 102 + i;
 	}

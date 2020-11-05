@@ -26,6 +26,8 @@ void onecard(int c);
 
 // prints the first four cards
 void first_hand(int* deck);
+// same as above with 2 asteriks for dealer hole card
+void first_hand_p(int* deck);
 
 //takes the integer 102-414 value of a card and returns the card's
 //blackjack score 2-11
@@ -146,26 +148,67 @@ void printcards(int* deck) {
 void deal(int* deck) {
 	int delrAs = 0;
 	int plyrAs = 0;
+	int pscr = 0;
+	int dscr = 0;
 	char hs;
 	int d_ind = 51;
 	int cards_dealt = 4;
-	first_hand(deck);
+	first_hand_p(deck);
+	for(int i = 51; i >= 48; i--) {
+		if(i % 2) {
+			pscr += score(deck[i]);
+			if(score(deck[i]) == 11) {
+				plyrAs++;
+			}
+		}else {
+			dscr += score(deck[i]);
+			if(score(deck[i]) == 11) {
+				delrAs++;
+			}
+		}
+	}
 	printf("Hit or stand? [h/s] ");
 	scanf(" %c", &hs);
 	if(hs == 'h') {
 		// hit
 		bool pl = true;
 		while(pl) {
-			first_hand(deck);
+			first_hand_p(deck);
 			for(int i = 3; i < cards_dealt; i++) {
 				printf("| ");
 				onecard(deck[d_ind - i - 1]);
+				// pscr += score(deck[d_ind - i - 1]);
 				printf("  | ");
 				onecard(0);
 				printf("  |\n");
 			}
+			pscr += score(deck[d_ind - 5]);
+			if(score(deck[d_ind - 5]) == 11) {
+				plyrAs++;
+			}
 			cards_dealt++;
-			
+			if(pscr > 21) {
+				if(plyrAs) {
+					plyrAs--;
+					pscr = pscr - 10;
+				}else{
+					printf("Player busts!\n");
+					first_hand(deck);
+					for(int i = 3; i < cards_dealt - 1; i++) {
+						printf("| ");
+						onecard(deck[d_ind - i - 1]);
+						printf("  | ");
+						onecard(0);
+						printf("  |\n");
+					}
+					sleep(2);
+					printf("Dealer stands.\n\n");
+					printf("Final scores: Player %d, Dealer %d.\n",
+							pscr, dscr);
+					printf("Dealer wins!\n");
+					return;
+				}
+			}
 			
 			printf("Hit or stand? [h/s] ");
 			scanf(" %c", &hs);
@@ -185,6 +228,22 @@ void deal(int* deck) {
 			printf("  |\n");
 		}
 		sleep(2);
+		
+		if(dscr >= 17) {
+			printf("Dealer stands.\n\n");
+			printf("Final scores: Player %d, Dealer %d.\n", pscr, dscr);
+			if(pscr > dscr) {
+				printf("Player wins!\n");
+			}else if (dscr > pscr) {
+				printf("Dealer wins!\n");
+			}else {
+				printf("Push! Play again.\n");
+				shuffle(deck, 1);
+				deal(deck);
+			}
+			return;
+		}
+		
 		printf("Dealer hits.\n");
 		// sleep(2);
 		first_hand(deck);
@@ -192,7 +251,11 @@ void deal(int* deck) {
 		onecard(deck[d_ind - 4]);
 		printf("  | ");
 		int dealer_cards = cards_dealt + 1;
-		onecard(deck[d_ind - cards_dealt]);
+		onecard(deck[d_ind - cards_dealt]);			// dealer card
+		dscr += score(deck[d_ind - cards_dealt]);	// update dscr
+		if(score(deck[d_ind - cards_dealt]) == 11) {
+			delrAs++;
+		}
 		printf("  |\n");
 		for(int i = 4; i < cards_dealt - 1; i++) {
 			printf("| ");
@@ -203,6 +266,22 @@ void deal(int* deck) {
 		}
 		
 		sleep(2);
+		
+		if(dscr >= 17) {
+			printf("Dealer stands.\n\n");
+			printf("Final scores: Player %d, Dealer %d.\n", pscr, dscr);
+			if(pscr > dscr) {
+				printf("Player wins!\n");
+			}else if (dscr > pscr) {
+				printf("Dealer wins!\n");
+			}else {
+				printf("Push! Play again.\n");
+				shuffle(deck, 1);
+				deal(deck);
+			}
+			return;
+		}
+		
 		printf("Dealer hits.\n");
 		// sleep(2);
 		first_hand(deck);
@@ -212,7 +291,7 @@ void deal(int* deck) {
 		//dealer_cards++;
 		
 		onecard(deck[d_ind - cards_dealt]);
-		
+		// dscr += score(deck[d_ind - cards_dealt]);
 		printf("  |\n");
 		printf("| ");
 		if(cards_dealt == 5) {
@@ -222,6 +301,10 @@ void deal(int* deck) {
 		}
 		printf("  | ");
 		onecard(deck[d_ind - dealer_cards]);
+		dscr += score(deck[d_ind - dealer_cards]);
+		if(score(deck[d_ind - dealer_cards]) == 11) {
+			delrAs++;
+		}
 		printf("  |\n");
 		for(int i = 5; i < cards_dealt - 1; i++) {
 			printf("| ");
@@ -234,6 +317,22 @@ void deal(int* deck) {
 		
 	}else {
 		sleep(2);
+		
+		if(dscr >= 17) {
+			printf("Dealer stands.\n\n");
+			printf("Final scores: Player %d, Dealer %d.\n", pscr, dscr);
+			if(pscr > dscr) {
+				printf("Player wins!\n");
+			}else if (dscr > pscr) {
+				printf("Dealer wins!\n");
+			}else {
+				printf("Push! Play again.\n");
+				shuffle(deck, 1);
+				deal(deck);
+			}
+			return;
+		}
+		
 		printf("Dealer hits.\n");
 		// sleep(2);
 		first_hand(deck);
@@ -242,10 +341,30 @@ void deal(int* deck) {
 			onecard(0);
 			printf("  | ");
 			onecard(deck[d_ind - i - 1]);
+			dscr += score(deck[d_ind - i - 1]);
+			if(score(deck[d_ind - i - 1]) == 11) {
+				delrAs++;
+			}
 			printf("  |\n");
 		}
 		cards_dealt++;
 		sleep(2);
+		
+		if(dscr >= 17) {
+			printf("Dealer stands.\n\n");
+			printf("Final scores: Player %d, Dealer %d.\n", pscr, dscr);
+			if(pscr > dscr) {
+				printf("Player wins!\n");
+			}else if (dscr > pscr) {
+				printf("Dealer wins!\n");
+			}else {
+				printf("Push! Play again.\n");
+				shuffle(deck, 1);
+				deal(deck);
+			}
+			return;
+		}
+		
 		printf("Dealer hits.\n");
 		//sleep(2);
 		first_hand(deck);
@@ -254,12 +373,31 @@ void deal(int* deck) {
 			onecard(0);
 			printf("  | ");
 			onecard(deck[d_ind - i - 1]);
+			dscr += score(deck[d_ind - i - 1]);
+			if(score(deck[d_ind - i - 1]) == 11) {
+				delrAs++;
+			}
 			printf("  |\n");
 		}
 		cards_dealt++;
 	}
 	sleep(2);
-	printf("Dealer stands.\n");
+	
+	if(dscr >= 17) {
+		printf("Dealer stands.\n\n");
+		printf("Final scores: Player %d, Dealer %d.\n", pscr, dscr);
+		if(pscr > dscr) {
+			printf("Player wins!\n");
+		}else if (dscr > pscr) {
+			printf("Dealer wins!\n");
+		}else {
+			printf("Push! Play again.\n");
+			shuffle(deck, 1);
+			deal(deck);
+		}
+		return;
+	}
+	
 	
 	return;
 }
@@ -271,6 +409,8 @@ void onecard(int c) {
 	char SPADE[]   = "\u2660"; // ♠
 	if(!c) {
 		printf("   ");
+	}else if (c == 1) {
+		printf(" **");
 	}else if(c % 100 != 10) {
 		if(c % 100 == 11) {
 			printf(" J");
@@ -355,6 +495,19 @@ void first_hand(int* deck) {
 	onecard(deck[49]);
 	printf("  | ");
 	onecard(deck[48]);
+	printf("  |\n");
+}
+
+void first_hand_p(int* deck) {
+	printf("\n Player Dealer\n");
+	printf("| ");
+	onecard(deck[51]);
+	printf("  | ");
+	onecard(deck[50]);
+	printf("  |\n| ");
+	onecard(deck[49]);
+	printf("  | ");
+	onecard(1);
 	printf("  |\n");
 }
 
