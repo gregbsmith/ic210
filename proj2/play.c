@@ -14,34 +14,38 @@ typedef char cstring[128];
 // modifies the array so that it contains
 // the shuffled int values of a deck of cards 
 int* shuffle(int* deck, int s);
-void printcards(int* deck);
-void deal(int* deck);
-// take a blank card string and modify for the number
-// suit representation of the card
-// void getCard(cstring card, int val);
 
-// prints one card in suit representation given an int value of
-// a card
-void onecard(int c);
+// prints out the first hand and puts the cards in the arrays for
+// each player's hands
+void first_hand(int* deck, int* pHand, int* dHand, int* pA, int* dA);
 
-// prints the first four cards
-void first_hand(int* deck);
-// same as above with 2 asteriks for dealer hole card
-void first_hand_p(int* deck);
+// gives the score of a hand
+// needs value for aces in case over 21 with ace,
+// will subtract 10 from score & decrease num aces by 1
+int score(int* hand, int* size, int* aces);
+// gives the score of a single card
+int onescore(int val);
 
-//takes the integer 102-414 value of a card and returns the card's
-//blackjack score 2-11
-int score(int val);
+// prints 1 card
+// if val is 0, prints "   "; if val is 1, prints " **"
+void card(int c);
+
+// player hits. returns false if busts
+bool plHit(int* deck, int* pHand, int* pHsize, int* pA,
+					 int* dHand, int* dHsize, int* dA);
+
+// dealer hits. returns 0 if bust, 1 if >= 17, 2 if under 17
+int dlHit(int* deck, int* pHand, int* pHsize, int* pA,
+					 int* dHand, int* dHsize, int* dA);
+
+// prints the board following a player standing and says what dealer
+// does
+// void plStand(int* pHand, int* pHsize, int* dHand, int* dHsize);
+// void plBust(int* pHand, int* pHsize, int* dHand, int* dHsize);
+
+void play(int* deck, int seed);
 
 int main() {
-	
-	// declaring characters used for suits
-	// this code was given on the IC210 website
-	char CLUB[]    = "\u2663"; // ♣
-	char DIAMOND[] = "\u2666"; // ♦
-	char HEART[]   = "\u2665"; // ♥
-	char SPADE[]   = "\u2660"; // ♠
-	
 	int seed = 0;
 	
 	
@@ -53,20 +57,124 @@ int main() {
 	}
 	
 	int* deck = calloc(52, sizeof(int));
+	play(deck, seed);
+}
+
+void play(int* deck, int seed) {
+	
+	// declaring characters used for suits
+	// this code was given on the IC210 website
+	char CLUB[]    = "\u2663"; // ♣
+	char DIAMOND[] = "\u2666"; // ♦
+	char HEART[]   = "\u2665"; // ♥
+	char SPADE[]   = "\u2660"; // ♠
+	int* pHand = calloc(20, sizeof(int));
+	int* dHand = calloc(20, sizeof(int));
+	// sizes of player and dealer hands
+	// this way we know how many cards each has
+	int dHsize = 2;
+	int pHsize = 2;
+	
+	// pointers to the number of aces that each has for scoring purposes
+	int pA = 0;
+	int dA = 0;
+	char hs;
+	bool pbust = false;
+	
 	shuffle(deck, seed);
-	// printcards(deck);
-	/*
-	for(int i = 0; i < 52; i++) {
-		printf("%d\n", deck[i]);
+	bool player = true;
+	first_hand(deck, pHand, dHand, &pA, &dA);
+	printf("Hit or stand? [h/s] ");
+	scanf("%c\n", &hs);
+	player = hs == 'h';
+	while(player) {
+		player = plHit(deck, pHand, &pHsize, &pA, dHand, &dHsize, &dA);
+		pbust = !player;
+		if(player) {
+			printf("Hit or stand? [h/s] ");
+			scanf("%c\n", &hs);
+			player = hs == 'h';
+		}
 	}
-	*/
-	//printf("\n\n Player Dealer");
+	if(pbust) {
+		// plBust(pHand, pHsize, dHand, dHsize);
+		printf("Player busts!\n\n");
+		
+		printf("\n\n Player Dealer\n");
+		printf("| ");
+		card(deck[51]);
+		printf("  | ");
+		card(deck[50]);
+		printf("  |\n");
+		printf("| ");
+		card(deck[49]);
+		printf("  | ");
+		card(deck[48]);
+		printf("  |\n");
+		
+		int lines = 0;
 	
-	deal(deck);
+		if(pHsize > dHsize) {
+			lines = pHsize - 2;
+		}else if(dHsize > pHsize) {
+			lines = dHsize - 2;
+		}
+		
+		for(int i = 0; i < lines; i++) {
+			printf("| ");
+			if(pHsize > i + 2) {
+				card(pHand[i + 2]);
+			}else {
+				card(0);
+			}
+			printf("  | ");
+			if(dHsize > i+ 2) {
+				card(dHand[i + 2]);
+			}else {
+				card(0);
+			}
+			printf("  |\n");
+		}
+		
+		
+	}else {
+		
+		bool dBust = false;
+		bool dealer = score(dHand, &dHsize, &dA) < 17;
+		while(dealer) {
+			int res = dlHit(deck, pHand, &pHsize, &pA, dHand, &dHsize, &dA);
+			dBust = res == 0;
+			dealer = res == 2;
+			if(res == 0) {
+				// bust
+				printf("Dealer busts!\n");
+			}else if(res == 1) {
+				// dealer stand
+				printf("Dealer stands.\n");
+			}else if(res == 2) {
+				// dealer hits
+				printf("Dealer hits.\n");
+			}
+		}
+	}
+	int pscr = score(dHand, &dHsize, &dA);
+	int dscr = score(dHand, &dHsize, &dA);
+	printf("Final scores: Player %d, Dealer %d.\n", pscr, dscr);
+	if(pscr > dscr) {
+		printf("Player wins!\n");
+	}else if (dscr > pscr) {
+		printf("Dealer wins!\n");
+	}else {
+		printf("Push! Play again.\n");
+		shuffle(deck, 1);
+		play(deck, seed);
+	}
 	
+	free(pHand);
+	free(dHand);
 	free(deck);
 	// printf("\n");
-	return 0;
+	return;
 }
 
 int* shuffle(int* deck, int s) {
@@ -105,304 +213,44 @@ int* shuffle(int* deck, int s) {
 	return deck;
 }
 
-void printcards(int* deck) {
+void first_hand(int* deck, int* pHand, int* dHand, int* pA, int* dA) {
+	printf(" Player Dealer\n");
+	printf("| ");
+	card(deck[51]);
+	printf("  | ");
+	card(deck[50]);
+	printf("  |\n");
+	printf("| ");
+	card(deck[49]);
+	printf("  |  **  |\n");
 	
-	char CLUB[]    = "\u2663"; // ♣
-	char DIAMOND[] = "\u2666"; // ♦
-	char HEART[]   = "\u2665"; // ♥
-	char SPADE[]   = "\u2660"; // ♠
-	
-	for(int i = 0; i < 52; i++) {
-		int c = deck[i];
-		if(c % 100 != 10) {
-			if(c % 100 == 11) {
-				printf(" J");
-			}else if(c % 100 == 12) {
-				printf(" Q");
-			}else if(c % 100 == 13) {
-				printf(" K");
-			}else if(c % 100 == 14) {
-				printf(" A");
-			}else {
-				printf(" %d", c % 100);
-			}
-		}else {
-			printf("%d", c % 100);
-		}
-		
-		if(c / 100 == 1) {
-			printf("%s", CLUB);
-		}else if(c / 100 == 2) {
-			printf("%s", DIAMOND);
-		}else if(c / 100 == 3) {
-			printf("%s", HEART);
-		}else if(c / 100 == 4) {
-			printf("%s", SPADE);
-		}
-		
-		printf("\n");
-	}
-	return;
+	pHand[0] = deck[51];
+	dHand[0] = deck[50];
+	pHand[1] = deck[49];
+	dHand[1] = deck[48];
 }
 
-void deal(int* deck) {
-	int delrAs = 0;
-	int plyrAs = 0;
-	int pscr = 0;
-	int dscr = 0;
-	char hs;
-	int d_ind = 51;
-	int cards_dealt = 4;
-	first_hand_p(deck);
-	for(int i = 51; i >= 48; i--) {
-		if(i % 2) {
-			pscr += score(deck[i]);
-			if(score(deck[i]) == 11) {
-				plyrAs++;
-			}
-		}else {
-			dscr += score(deck[i]);
-			if(score(deck[i]) == 11) {
-				delrAs++;
-			}
-		}
+int score(int* hand, int* size, int* aces) {
+	int score = 0;
+	for(int i = 0; i < *size; i++) {
+		score += onescore(hand[i]);
 	}
-	printf("Hit or stand? [h/s] ");
-	scanf(" %c", &hs);
-	if(hs == 'h') {
-		// hit
-		bool pl = true;
-		while(pl) {
-			first_hand_p(deck);
-			for(int i = 3; i < cards_dealt; i++) {
-				printf("| ");
-				onecard(deck[d_ind - i - 1]);
-				// pscr += score(deck[d_ind - i - 1]);
-				printf("  | ");
-				onecard(0);
-				printf("  |\n");
-			}
-			pscr += score(deck[d_ind - 5]);
-			if(score(deck[d_ind - 5]) == 11) {
-				plyrAs++;
-			}
-			cards_dealt++;
-			if(pscr > 21) {
-				if(plyrAs) {
-					plyrAs--;
-					pscr = pscr - 10;
-				}else{
-					printf("Player busts!\n");
-					first_hand(deck);
-					for(int i = 3; i < cards_dealt - 1; i++) {
-						printf("| ");
-						onecard(deck[d_ind - i - 1]);
-						printf("  | ");
-						onecard(0);
-						printf("  |\n");
-					}
-					sleep(2);
-					printf("Dealer stands.\n\n");
-					printf("Final scores: Player %d, Dealer %d.\n",
-							pscr, dscr);
-					printf("Dealer wins!\n");
-					return;
-				}
-			}
-			
-			printf("Hit or stand? [h/s] ");
-			scanf(" %c", &hs);
-			if(hs != 'h') {
-				pl = false;
-			}
-		}
+	if(score > 21 && *aces > 0) {
+		score = score - 10;
+		*aces--;
 	}
-	// stand
-	first_hand(deck);
-	if(cards_dealt > 4) {
-		for(int i = 3; i < cards_dealt - 1; i++) {
-			printf("| ");
-			onecard(deck[d_ind - i - 1]);
-			printf("  | ");
-			onecard(0);
-			printf("  |\n");
-		}
-		sleep(2);
-		
-		if(dscr >= 17) {
-			printf("Dealer stands.\n\n");
-			printf("Final scores: Player %d, Dealer %d.\n", pscr, dscr);
-			if(pscr > dscr) {
-				printf("Player wins!\n");
-			}else if (dscr > pscr) {
-				printf("Dealer wins!\n");
-			}else {
-				printf("Push! Play again.\n");
-				shuffle(deck, 1);
-				deal(deck);
-			}
-			return;
-		}
-		
-		printf("Dealer hits.\n");
-		// sleep(2);
-		first_hand(deck);
-		printf("| ");
-		onecard(deck[d_ind - 4]);
-		printf("  | ");
-		int dealer_cards = cards_dealt + 1;
-		onecard(deck[d_ind - cards_dealt]);			// dealer card
-		dscr += score(deck[d_ind - cards_dealt]);	// update dscr
-		if(score(deck[d_ind - cards_dealt]) == 11) {
-			delrAs++;
-		}
-		printf("  |\n");
-		for(int i = 4; i < cards_dealt - 1; i++) {
-			printf("| ");
-			onecard(deck[d_ind - i - 1]);
-			printf("  | ");
-			onecard(0);
-			printf("  |\n");
-		}
-		
-		sleep(2);
-		
-		if(dscr >= 17) {
-			printf("Dealer stands.\n\n");
-			printf("Final scores: Player %d, Dealer %d.\n", pscr, dscr);
-			if(pscr > dscr) {
-				printf("Player wins!\n");
-			}else if (dscr > pscr) {
-				printf("Dealer wins!\n");
-			}else {
-				printf("Push! Play again.\n");
-				shuffle(deck, 1);
-				deal(deck);
-			}
-			return;
-		}
-		
-		printf("Dealer hits.\n");
-		// sleep(2);
-		first_hand(deck);
-		printf("| ");
-		onecard(deck[d_ind - 4]);
-		printf("  | ");
-		//dealer_cards++;
-		
-		onecard(deck[d_ind - cards_dealt]);
-		// dscr += score(deck[d_ind - cards_dealt]);
-		printf("  |\n");
-		printf("| ");
-		if(cards_dealt == 5) {
-			onecard(0);
-		}else {
-			onecard(deck[d_ind - 5]);
-		}
-		printf("  | ");
-		onecard(deck[d_ind - dealer_cards]);
-		dscr += score(deck[d_ind - dealer_cards]);
-		if(score(deck[d_ind - dealer_cards]) == 11) {
-			delrAs++;
-		}
-		printf("  |\n");
-		for(int i = 5; i < cards_dealt - 1; i++) {
-			printf("| ");
-			onecard(deck[d_ind - i - 1]);
-			
-			printf("  | ");
-			onecard(0);
-			printf("  |\n");
-		}
-		
-	}else {
-		sleep(2);
-		
-		if(dscr >= 17) {
-			printf("Dealer stands.\n\n");
-			printf("Final scores: Player %d, Dealer %d.\n", pscr, dscr);
-			if(pscr > dscr) {
-				printf("Player wins!\n");
-			}else if (dscr > pscr) {
-				printf("Dealer wins!\n");
-			}else {
-				printf("Push! Play again.\n");
-				shuffle(deck, 1);
-				deal(deck);
-			}
-			return;
-		}
-		
-		printf("Dealer hits.\n");
-		// sleep(2);
-		first_hand(deck);
-		for(int i = 3; i < cards_dealt; i++) {
-			printf("| ");
-			onecard(0);
-			printf("  | ");
-			onecard(deck[d_ind - i - 1]);
-			dscr += score(deck[d_ind - i - 1]);
-			if(score(deck[d_ind - i - 1]) == 11) {
-				delrAs++;
-			}
-			printf("  |\n");
-		}
-		cards_dealt++;
-		sleep(2);
-		
-		if(dscr >= 17) {
-			printf("Dealer stands.\n\n");
-			printf("Final scores: Player %d, Dealer %d.\n", pscr, dscr);
-			if(pscr > dscr) {
-				printf("Player wins!\n");
-			}else if (dscr > pscr) {
-				printf("Dealer wins!\n");
-			}else {
-				printf("Push! Play again.\n");
-				shuffle(deck, 1);
-				deal(deck);
-			}
-			return;
-		}
-		
-		printf("Dealer hits.\n");
-		//sleep(2);
-		first_hand(deck);
-		for(int i = 3; i < cards_dealt; i++) {
-			printf("| ");
-			onecard(0);
-			printf("  | ");
-			onecard(deck[d_ind - i - 1]);
-			dscr += score(deck[d_ind - i - 1]);
-			if(score(deck[d_ind - i - 1]) == 11) {
-				delrAs++;
-			}
-			printf("  |\n");
-		}
-		cards_dealt++;
-	}
-	sleep(2);
-	
-	if(dscr >= 17) {
-		printf("Dealer stands.\n\n");
-		printf("Final scores: Player %d, Dealer %d.\n", pscr, dscr);
-		if(pscr > dscr) {
-			printf("Player wins!\n");
-		}else if (dscr > pscr) {
-			printf("Dealer wins!\n");
-		}else {
-			printf("Push! Play again.\n");
-			shuffle(deck, 1);
-			deal(deck);
-		}
-		return;
-	}
-	
-	
-	return;
+	return score;
 }
 
-void onecard(int c) {
+int onescore(int val) {
+	int score = val % 100;
+	if(score > 11) {
+		score = 10;
+	}
+	return score;
+}
+
+void card(int c) {
 	char CLUB[]    = "\u2663"; // ♣
 	char DIAMOND[] = "\u2666"; // ♦
 	char HEART[]   = "\u2665"; // ♥
@@ -436,87 +284,91 @@ void onecard(int c) {
 	}else if(c / 100 == 4) {
 		printf("%s", SPADE);
 	}
-	
-	//printf("\n");
-	
 	return;
 }
 
-/*get card function
-void getCard(cstring card, int val) {
-	char CLUB[]    = "\u2663"; // ♣
-	char DIAMOND[] = "\u2666"; // ♦
-	char HEART[]   = "\u2665"; // ♥
-	char SPADE[]   = "\u2660"; // ♠
+bool plHit(int* deck, int* pHand, int* pHsize, int* pA,
+					 int* dHand, int* dHsize, int* dA) {
+	printf("\n\n Player Dealer\n");
+	printf("| ");
+	card(deck[51]);
+	printf("  | ");
+	card(deck[50]);
+	printf("  |\n");
+	printf("| ");
+	card(deck[49]);
+	printf("  |  **  |\n");
 	
-	//cstring card = "";
+	for(int i = 2; i < *pHsize; i ++) {
+		printf("| ");
+		card(pHand[i]);
+		printf("  |      |\n");
+	}
 	
-	if(val % 100 != 10) {
-		//strcat(card, " ");
-		if(val % 100 == 11) {
-			strcat(card, " J");
-		}else if(val % 100 == 12) {
-			strcat(card, " Q");
-		}else if(val % 100 == 13) {
-			strcat(card, " K");
-		}else if(val % 100 == 14) {
-			strcat(card, " A");
+	int offset = 51 - *pHsize;
+	printf("| ");
+	card(deck[offset]);
+	printf("  |      |\n");
+	
+	pHand[*pHsize] = deck[offset];
+	*pHsize++;
+	
+	int sc = score(pHand, pHsize, pA);
+	
+	return sc <= 21;
+	
+}
+
+int dlHit(int* deck, int* pHand, int* pHsize, int* pA,
+					 int* dHand, int* dHsize, int* dA) {
+	printf("\n\n Player Dealer\n");
+	printf("| ");
+	card(deck[51]);
+	printf("  | ");
+	card(deck[50]);
+	printf("  |\n");
+	printf("| ");
+	card(deck[49]);
+	printf("  | ");
+	card(deck[48]);
+	printf("  |\n");
+	dHand[*dHsize] = deck[51 - (*pHsize + *dHsize)];
+	
+	int lines = 0;
+	
+	if(pHsize > dHsize) {
+		lines = *pHsize - 2;
+	}else if(dHsize > pHsize) {
+		lines = *dHsize - 2;
+	}
+	
+	for(int i = 0; i < lines; i++) {
+		printf("| ");
+		if(*pHsize > i + 2) {
+			card(pHand[i + 2]);
 		}else {
-			strcat(card, " ");
-			char the_array[1];
-			the_array[0] = (char)(val % 100);
-			strcat(card, the_array);
+			card(0);
 		}
+		printf("  | ");
+		if(*dHsize > i+ 2) {
+			card(dHand[i + 2]);
+		}else {
+			card(0);
+		}
+		printf("  |\n");
+	}
+	
+	int sc = score(dHand, dHsize, dA);
+	// 0 = bust
+	// 1 = stand
+	// 2 = hit
+	
+	if(sc > 21) {
+		return 0;
+	}else if(sc < 17) {
+		return 2;
 	}else {
-		strcat(card, "10");
-		printf("%d", val % 100);
-	}
-		
-	if(val / 100 == 1) {
-		strcat(card, CLUB);
-	}else if(val / 100 == 2) {
-		strcat(card, DIAMOND);
-	}else if(val / 100 == 3) {
-		strcat(card, HEART);
-	}else if(val / 100 == 4) {
-		strcat(card, SPADE);
-	}
-	return;
-}
-*/
-
-void first_hand(int* deck) {
-	printf("\n Player Dealer\n");
-	printf("| ");
-	onecard(deck[51]);
-	printf("  | ");
-	onecard(deck[50]);
-	printf("  |\n| ");
-	onecard(deck[49]);
-	printf("  | ");
-	onecard(deck[48]);
-	printf("  |\n");
-}
-
-void first_hand_p(int* deck) {
-	printf("\n Player Dealer\n");
-	printf("| ");
-	onecard(deck[51]);
-	printf("  | ");
-	onecard(deck[50]);
-	printf("  |\n| ");
-	onecard(deck[49]);
-	printf("  | ");
-	onecard(1);
-	printf("  |\n");
-}
-
-int score(int val) {
-	if(val % 100 == 14) {
-		return 11;
-	}else if(val % 100 >= 10) {
-		return 10;
-	}else {
-		return val % 100;
+		return 1;
 	}
 }
+
