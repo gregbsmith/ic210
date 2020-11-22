@@ -54,9 +54,7 @@ char* get_ith(int i, Node* L) {
 	for(int j = 0; j <= i; j++) {
 		temp = temp->next;
 	}
-	val = temp->data;
-	free(temp);
-	return val;
+	return temp->data;
 }
 
 int num_chars(Node* L) {
