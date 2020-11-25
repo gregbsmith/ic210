@@ -23,14 +23,12 @@ void print_fwd(Node* L) {
 		printf("%s\n", temp->data);
 		temp = temp->next;
 	}
-	free(temp);
 }
 
 void free_list(Node* L) {
 	while(L) {
-		Node* temp = L->next;
-		free(L);
-		L = temp;
+		Node* temp = L;
+		L = L->next;
 		free(temp);
 	}
 	free(L);
@@ -44,14 +42,12 @@ bool contains(char* s, Node* L) {
 		}
 		temp = temp->next;
 	}
-	free(temp);
 	return false;
 }
 
 char* get_ith(int i, Node* L) {
-	char* val;
 	Node* temp = L;
-	for(int j = 0; j <= i; j++) {
+	for(int j = 0; j < i; j++) {
 		temp = temp->next;
 	}
 	return temp->data;
@@ -64,6 +60,5 @@ int num_chars(Node* L) {
 		len += strlen(temp->data);
 		temp = temp->next;
 	}
-	free(temp);
 	return len;
 }

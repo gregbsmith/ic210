@@ -18,28 +18,29 @@ Node* add2front(char* s, Node* L) {
 }
 
 void print_fwd(Node* L) {
-	if(L) {
-		printf("%s\n", L->data);
+	if(L == NULL) {
+		return;
 	}
-	if(L->next) {
-		print_fwd(L->next);
-	}
+	printf("%s\n", L->data);
+	print_fwd(L->next);
 }
 
 void free_list(Node* L) {
 	if(L) {
-		free_list(L);
+		free_list(L->next);
 		free(L);
 	}else {
-		free L;
+		free(L);
 	}
 }
 
 bool contains(char* s, Node* L) {
-	if(!strcmp(L->data, s)) {
+	if(L == NULL) {
+		return false;
+	}else if(!strcmp(L->data, s)) {
 		return true;
-	}else if(L) {
-		contains(s, L->next);
+	}else if(L->next) {
+		return contains(s, L->next);
 	}else {
 		return false;
 	}
@@ -49,11 +50,16 @@ char* get_ith(int i, Node* L) {
 	if(!i) {
 		return L->data;
 	}else {
-		get_ith(i - 1, L->next);
+		return get_ith(i - 1, L->next);
 	}
 }
 
 int num_chars(Node* L) {
-	int n = 0;
-	if(L)
+	if(L == NULL) {
+		return 0;
+	}else if(L->next) {
+		return strlen(L->data) + num_chars(L->next);
+	}else {
+		return strlen(L->data);
+	}
 }
