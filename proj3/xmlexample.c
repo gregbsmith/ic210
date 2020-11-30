@@ -21,6 +21,7 @@ int main() {
   printf("The root node name is %s\n", (char*)root->name);
 
   // go to the root's first child
+  // added two ->next calls
   xmlNode* child = root->children->next;
   printf("The root's child's name is %s\n", (char*)child->name);
 

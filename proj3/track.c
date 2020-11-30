@@ -55,6 +55,26 @@ int main() {
 		}
 		printf("Opened %s with ", file);
 		
+		xmlNode* root = xmlDocGetRootElement(fin);
+		xmlNode* child = root->children->next;
+		while(strcmp("trk", (char*)child->name)) {
+			child = child->next;
+		}
+		// printf("\nshould say trk: %s\n", (char*)child->name);
+		
+		child = child->children->next;
+		
+		while(strcmp("trkseg", (char*)child->name)) {
+			child = child->next;
+		}
+		// printf("\nshould say trkseg: %s\n", (char*)child->name);
+		
+		xmlNode* trkseg = child;
+		
+		// printf("\nshould say trkseg: %s\n", (char*)trkseg->name);
+		
+		
+		
 		xmlFreeDoc(fin);
 	}else {
 		
