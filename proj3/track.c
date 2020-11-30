@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <math.h>
+#include <libxml/parser.h> // #include statement from xmlexample.c
 #include "gps.h"
 
 typedef struct {
@@ -35,15 +36,7 @@ int main() {
 	printf("File: ");
 	scanf(" %s", file);
 	Node* L = NULL;
-	
-	FILE* fin = fopen(file, "r");
-	
-	if(!fin) {
-		printf("Error: %s not found.\n", file);
-		return 1;
-	}
-	
-	printf("Opened %s with ", file);
+	int num_points = 0;
 	
 	bool gpx = 0;
 	int fnlen = strlen(file);
@@ -53,10 +46,25 @@ int main() {
 	}
 	
 	if(gpx) {
-		printf("it's a gpx\n");
+		// printf("it's a gpx\n");
+		xmlDoc* fin = xmlReadFile(file, NULL, 0);
+		
+		if(!fin) {
+			printf("Error: %s not found.\n", file);
+			return 1;
+		}
+		printf("Opened %s with ", file);
+		
+		xmlFreeDoc(fin);
 	}else {
 		
-		int num_points = 0;
+		FILE* fin = fopen(file, "r");
+		
+		if(!fin) {
+			printf("Error: %s not found.\n", file);
+			return 1;
+		}
+		printf("Opened %s with ", file);
 		fscanf(fin, " %d", &num_points);
 		printf("%d waypoints\n", num_points);
 		
@@ -79,6 +87,8 @@ int main() {
 			w_cur.coor = make_gps(lat_cur, long_cur);
 			L = add2front(w_cur, L);
 		}
+		
+		fclose(fin);
 	}
 	
 	cstring command;
@@ -92,7 +102,6 @@ int main() {
 	}
 	
 	free(L);
-	fclose(fin);
 	return 0;
 }
 
