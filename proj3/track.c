@@ -226,64 +226,6 @@ void cmd(cstring c, Node* L, int numpts) {
 	return;
 }
 
-// visual is the function called by cmd when "visual" is entered
-// into the terminal
-void visual(Node* L, int numpts) {
-	// line 22 of gtkexample.c
-	GtkApplication *app = gtk_application_new ("my.awesome.app", G_APPLICATION_FLAGS_NONE);
-
-	double lo_lat = L->data.coor.latrad;
-	double hi_lat = L->data.coor.latrad;
-	double lo_lon = L->data.coor.lonrad;
-	double hi_lon = L->data.coor.lonrad;
-
-	Node* temp = L;
-	while(temp != NULL) {
-		if(temp->data.coor.latrad < lo_lat) {
-			lo_lat = temp->data.coor.latrad;
-		}else if(temp->data.coor.latrad > hi_lat) {
-			hi_lat = temp->data.coor.latrad;
-		}
-		if(temp->data.coor.lonrad < lo_lon) {
-			lo_lon = temp->data.coor.lonrad;
-		}else if(temp->data.coor.lonrad > hi_lon) {
-			hi_lon = temp->data.coor.lonrad;
-		}
-		temp = temp->next;
-	}
-
-	double lat_diff = hi_lat - lo_lat;
-	double lon_diff = hi_lon - lo_lon;
-	Point ends[numpts];
-	double lat_factor = 799 / lat_diff;
-	double lon_factor = 799 / lon_diff;
-	temp = L;
-	int arrind = 0;
-	while(temp != NULL) {
-		ends[arrind].x = (int) ((temp->data.coor.lonrad - lo_lon) * lon_factor);
-		ends[arrind].y = 799 - (int) ((temp->data.coor.latrad - lo_lat) * lat_factor);
-		arrind++;
-		temp = temp->next;
-	}
-
-	/* for(int i = 0; i < numpts; i++) {
-		printf("%d:	%d	%d\n", i, ends[i].x, ends[i].y);
-	} */
-
-	// line 30 of gtkexample.c
-	g_signal_connect(app, "activate", G_CALLBACK(activate), ends);
-
-	// printf("start\n");
-
-  // line 36 of gtkexample.c
-  g_application_run (G_APPLICATION (app), 0, NULL);
-
-  // printf("done\n");
-
-	//line 46 of gtkexample.c
-	g_object_unref(app);
-}
-
 void stats(Node* L) {
 	double dist = 0;
 	time_t firsttime = L->data.time;
@@ -398,13 +340,40 @@ void landmarks(Node* L, int numpts) {
 }
 
 void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
+	//printf("draw event start\n");
+  // set the line color to blue and line width to 2 points
+	cairo_set_source_rgb(cr, 0,0,255);
+	cairo_set_line_width(cr, 2.0);
+  // cast the user_data to an array of Points.
+  Point* pts = (Point*) user_data;
+	int numpts = 0;
+	while(pts[numpts].x != -1 && pts[numpts].y != -1) {
+		numpts++;
+	}
+	for(int i = 0; i < numpts - 1; i++) {
+		//printf("drawing segment %d\n", i);
+
+		Point seg[2] = {pts[i], pts[i + 1]};
+	  // to draw, you move the "cursor" somewhere first...
+	  cairo_move_to(cr, seg[0].x, seg[0].y);
+
+	  // and then call cairo_line_to to draw a line to wherever you want
+	  cairo_line_to(cr, seg[1].x, seg[1].y);
+
+	  // the path you made isn't actually drawn until you call cairo_stroke.
+	  cairo_stroke(cr);
+	}
+	//printf("draw event end\n");
+}
+/*void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
+  printf("draw event start\n");
+  printf("drawing segment\n");
   // set the line color to blue and line width to 2 points
   cairo_set_source_rgb(cr, 0,0,255);
   cairo_set_line_width(cr, 2.0);
 
   // cast the user_data to an array of Points.
   Point* pts = (Point*) user_data;
-
 
   // to draw, you move the "cursor" somewhere first...
   cairo_move_to(cr, pts[0].x, pts[0].y);
@@ -414,11 +383,12 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
 
   // the path you made isn't actually drawn until you call cairo_stroke.
   cairo_stroke(cr);
-
-}
+  printf("draw event end\n");
+}*/
 
 /* This is the function that opens the window once GTK starts up. */
-void activate (GtkApplication* app, gpointer user_data) {
+/* void activate (GtkApplication* app, gpointer user_data) {
+	printf("activate start\n");
   // create the window and give it a title
   GtkWidget *window = gtk_application_window_new(app);
   gtk_window_set_title (GTK_WINDOW (window), "Map");
@@ -431,11 +401,97 @@ void activate (GtkApplication* app, gpointer user_data) {
   // tell GTK what function to call to draw the window
   // Notice we pass along the user_data, which for this program
   // will be an array of two Point structs.
-	for(int i = 0; i < (sizeof(user_data) / sizeof(Point)) - 1; i++) {
-		Point cur_seg[2] = {(Point)*user_data[i], (Point)*user_data[i + 1]};
-		g_signal_connect(G_OBJECT(drawing_area), "draw", G_CALLBACK(on_draw_event), cur_seg);
+	Point* pts = (Point*) user_data;
+	int numpts = sizeof(pts) / sizeof(Point);
+	for(int i = 0; i < numpts - 1; i++) {
+		Point seg[2] = {pts[i], pts[i + 1]};
+		printf("calling on_draw_event		%d\n", i);
+		g_signal_connect(G_OBJECT(drawing_area), "draw", G_CALLBACK(on_draw_event), seg);
 	}
 
   // well you don't want your beautiful window to be hidden do you?
   gtk_widget_show_all(window);
+	printf("activate end\n");
+} */
+void activate (GtkApplication* app, gpointer user_data) {
+  //printf("activate start\n");
+  // create the window and give it a title
+  GtkWidget *window = gtk_application_window_new(app);
+  gtk_window_set_title (GTK_WINDOW (window), "Map");
+
+  // make a drawing canvas inside the window
+  GtkWidget *drawing_area = gtk_drawing_area_new ();
+  gtk_widget_set_size_request (drawing_area, 800, 800);
+  gtk_container_add(GTK_CONTAINER(window), drawing_area);
+
+  // tell GTK what function to call to draw the window
+  // Notice we pass along the user_data, which for this program
+  // will be an array of two Point structs.
+  g_signal_connect(G_OBJECT(drawing_area), "draw",
+            G_CALLBACK(on_draw_event), user_data);
+
+  // well you don't want your beautiful window to be hidden do you?
+  gtk_widget_show_all(window);
+  //printf("activate end\n");
+}
+
+// visual is the function called by cmd when "visual" is entered
+// into the terminal
+void visual(Node* L, int numpts) {
+	// line 22 of gtkexample.c
+	GtkApplication *app = gtk_application_new ("my.awesome.app", G_APPLICATION_FLAGS_NONE);
+
+	double lo_lat = L->data.coor.latrad;
+	double hi_lat = L->data.coor.latrad;
+	double lo_lon = L->data.coor.lonrad;
+	double hi_lon = L->data.coor.lonrad;
+
+	Node* temp = L;
+	while(temp != NULL) {
+		if(temp->data.coor.latrad < lo_lat) {
+			lo_lat = temp->data.coor.latrad;
+		}else if(temp->data.coor.latrad > hi_lat) {
+			hi_lat = temp->data.coor.latrad;
+		}
+		if(temp->data.coor.lonrad < lo_lon) {
+			lo_lon = temp->data.coor.lonrad;
+		}else if(temp->data.coor.lonrad > hi_lon) {
+			hi_lon = temp->data.coor.lonrad;
+		}
+		temp = temp->next;
+	}
+
+	double lat_diff = hi_lat - lo_lat;
+	double lon_diff = hi_lon - lo_lon;
+	Point ends[numpts + 1];
+	double lat_factor = 799 / lat_diff;
+	double lon_factor = 799 / lon_diff;
+	temp = L;
+	int arrind = 0;
+	while(temp != NULL) {
+		ends[arrind].x = (int) ((temp->data.coor.lonrad - lo_lon) * lon_factor);
+		ends[arrind].y = 799 - (int) ((temp->data.coor.latrad - lo_lat) * lat_factor);
+		arrind++;
+		temp = temp->next;
+	}
+
+	Point stop = {-1, -1};
+	ends[numpts] = stop;
+
+	/* for(int i = 0; i < numpts; i++) {
+		printf("%d:	%d	%d\n", i, ends[i].x, ends[i].y);
+	} */
+
+	// line 30 of gtkexample.c
+	g_signal_connect(app, "activate", G_CALLBACK(activate), ends);
+
+	// printf("start\n");
+
+  // line 36 of gtkexample.c
+  g_application_run (G_APPLICATION (app), 0, NULL);
+
+  // printf("done\n");
+
+	//line 46 of gtkexample.c
+	g_object_unref(app);
 }

@@ -22,7 +22,7 @@ int main () {
   GtkApplication *app = gtk_application_new ("my.awesome.app", G_APPLICATION_FLAGS_NONE);
 
   // make an array of two points to draw a line between
-  Point ends[2] = {{200, 400}, {700, 300}};
+  Point ends[5] = {{200, 400}, {700, 300}, {300, 500}, {100, 600}, {500, 100}};
 
   // tell GTK what function to call when the application starts
   // Notice we pass ends as the last argument, which is passed along
@@ -50,6 +50,8 @@ int main () {
  * array of two point structs.
  */
 void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
+  printf("draw event start\n");
+  printf("drawing segment\n");
   // set the line color to blue and line width to 2 points
   cairo_set_source_rgb(cr, 0,0,255);
   cairo_set_line_width(cr, 2.0);
@@ -57,18 +59,22 @@ void on_draw_event(GtkWidget *widget, cairo_t *cr, gpointer user_data) {
   // cast the user_data to an array of Points.
   Point* pts = (Point*) user_data;
 
-  // to draw, you move the "cursor" somewhere first...
-  cairo_move_to(cr, pts[0].x, pts[0].y);
+  for(int i = 0; i < 5 - 1; i++) {
+      // to draw, you move the "cursor" somewhere first...
+      cairo_move_to(cr, pts[i].x, pts[i].y);
 
-  // and then call cairo_line_to to draw a line to wherever you want
-  cairo_line_to(cr, pts[1].x, pts[1].y);
+      // and then call cairo_line_to to draw a line to wherever you want
+      cairo_line_to(cr, pts[i + 1].x, pts[i + 1].y);
 
-  // the path you made isn't actually drawn until you call cairo_stroke.
-  cairo_stroke(cr);
+      // the path you made isn't actually drawn until you call cairo_stroke.
+      cairo_stroke(cr);
+    }
+  printf("draw event end\n");
 }
 
 /* This is the function that opens the window once GTK starts up. */
 void activate (GtkApplication* app, gpointer user_data) {
+  printf("activate start\n");
   // create the window and give it a title
   GtkWidget *window = gtk_application_window_new(app);
   gtk_window_set_title (GTK_WINDOW (window), "Map");
@@ -86,4 +92,5 @@ void activate (GtkApplication* app, gpointer user_data) {
 
   // well you don't want your beautiful window to be hidden do you?
   gtk_widget_show_all(window);
+  printf("activate end\n");
 }
